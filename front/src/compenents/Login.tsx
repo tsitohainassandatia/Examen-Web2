@@ -11,7 +11,7 @@ export function Login() {
                 <br />
                 <div className="w-min rounded-lg border-2 border-gray-400">
                     <input type="email" 
-                    placeholder="enter your email" 
+                    placeholder="enter your name" 
                     className="py-1 px-1.5 rounded-lg w-68 focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300 bg-green-50"/>
                 </div>
                 <br />

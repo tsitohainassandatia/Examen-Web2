@@ -4,6 +4,8 @@ import { Login } from './compenents/Login'
 import SignUp from './compenents/SignUp'
 
 
+
+
 function App() {
   return (
     <Router>
@@ -11,6 +13,7 @@ function App() {
         <Route path='/' element={<Login/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup'element={<SignUp/>}/>
+        
       </Routes>
     </Router>
         

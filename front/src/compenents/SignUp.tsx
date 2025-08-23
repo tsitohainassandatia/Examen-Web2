@@ -13,10 +13,19 @@ export default function SignUp() {
                         placeholder="enter your email" 
                         className="py-1 px-1.5 rounded-lg w-68 focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300 bg-green-50"/>
                     </div>
-                    <br />
+                    <div className="w-min rounded-lg border-2 border-gray-400">
+                        <input type="text"
+                        placeholder="enter your username"
+                        className="py-1 px-1.5 rounded-lg w-68 focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300 bg-green-50" />
+                    </div>
                     <div className="w-min rounded-lg border-2 border-gray-400 ">
                         <input type="password"
                         placeholder="create your password"
+                        className="py-1 px-1.5 rounded-lg w-68 focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300 bg-green-50" />
+                    </div>
+                    <div className="w-min rounded-lg border-2 border-gray-400 ">
+                        <input type="password"
+                        placeholder="confirm your password"
                         className="py-1 px-1.5 rounded-lg w-68 focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300 bg-green-50" />
                     </div>
                     <button type="submit" className="bg-emerald-700 font-bold text-white text-center py-1 px-2.5 rounded-lg hover:scale-110 duration-200">Sign up</button>
