@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
-import { Login } from './compenents/Login'
-import SignUp from './compenents/SignUp'
+import { Login } from './compenents/log&signin/Login'
+import SignUp from './compenents/log&signin/SignUp'
 
 
 
