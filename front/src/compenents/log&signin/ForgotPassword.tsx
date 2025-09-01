@@ -26,7 +26,8 @@ export default function ForgotPassword() {
                         className="py-1 px-1.5 rounded-lg w-68 focus:outline-none focus:ring-2 focus:ring-green-600 transition duration-300 bg-black text-green-500" />
                         </div>
                     </div>
-                    <button type="submit" className="bg-green-800 font-bold text-white text-center py-1 px-2.5 rounded-lg hover:scale-110 duration-200">Reset password</button>
+                    <button type="submit" 
+                    className="bg-green-800 font-bold text-white text-center py-1 px-2.5 rounded-lg hover:scale-110 duration-200">Reset password</button>
                     <p className="text-white"><Link to='/login' className="text-green-500 underline">Log in</Link> or <Link to='/signup' className="text-green-500 underline">Sign up</Link></p>
                 </div>    
             </div>
