@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import ThemeToggle from "../components/ThemeToggle";
+
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
@@ -71,7 +71,7 @@ export default function Categories() {
       <div className="max-w-2xl mx-auto space-y-6">
         <header className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Catégories</h1>
-          <ThemeToggle />
+          
         </header>
 
         <div className="flex gap-2">
