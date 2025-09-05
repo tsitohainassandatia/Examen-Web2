@@ -7,16 +7,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// -------------------------
-// Route test
-// -------------------------
 app.get("/", (req, res) => {
   res.send("🚀 Backend Expense Tracker is running!");
 });
 
-// -------------------------
-// DB setup
-// -------------------------
 const db = new Database("./data.sqlite");
 db.pragma("journal_mode = WAL");
 

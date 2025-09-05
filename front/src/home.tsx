@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Dashboard from "./pages/Dashboard";
 import Expenses from "./pages/Expenses";
 import Categories from "./pages/Categories";
 
-export default function App() {
+export default function Home() {
   const [page, setPage] = useState<"dashboard" | "expenses" | "categories">("dashboard");
+
+  // 🔹 Vérifie si l’utilisateur est connecté
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login"; // pas de token → redirige vers login
+    }
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-white dark:bg-neutral-900 text-emerald-900 dark:text-emerald-200">
