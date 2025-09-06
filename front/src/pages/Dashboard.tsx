@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
+import { eventBus } from "../utils/eventBus"; // ajuste le chemin si besoin
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -7,6 +9,11 @@ type MonthlySummary = {
   totalIncome: number;
   totalExpense: number;
   balance: number;
+};
+
+type CategoryExpense = {
+  category: string;
+  total: number;
 };
 
 export default function Dashboard() {
@@ -18,7 +25,10 @@ export default function Dashboard() {
   const [userIncome, setUserIncome] = useState<number>(0);
   const [userBudget, setUserBudget] = useState<number>(0);
 
-  // Charger les valeurs depuis localStorage au montage
+  const [showChart, setShowChart] = useState(false);
+  const [categoryData, setCategoryData] = useState<CategoryExpense[]>([]);
+
+  // Charger les valeurs depuis localStorage
   useEffect(() => {
     const storedIncome = localStorage.getItem("userIncome");
     const storedBudget = localStorage.getItem("userBudget");
@@ -30,7 +40,7 @@ export default function Dashboard() {
     }
   }, []);
 
-  // Charger le résumé mensuel depuis le backend
+  // Charger les données et diagramme
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -43,13 +53,41 @@ export default function Dashboard() {
     }
   };
 
+  const fetchCategoryExpenses = async () => {
+    try {
+      const res = await axios.get(`${API}/api/expenses`);
+      const expenses = res.data as { amount: number; category: string }[];
+
+      const totals: Record<string, number> = {};
+      expenses.forEach(e => {
+        totals[e.category] = (totals[e.category] || 0) + e.amount;
+      });
+
+      const chartData: CategoryExpense[] = Object.entries(totals).map(([category, total]) => ({ category, total }));
+      setCategoryData(chartData);
+      setShowChart(true);
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la récupération des données du diagramme.");
+    }
+  };
+
+  // Effet principal
   useEffect(() => {
     if (!initialSetup) {
       fetchData();
+      fetchCategoryExpenses();
     }
+
+    // S'abonner aux mises à jour des dépenses via eventBus
+    const unsubscribe = eventBus.subscribe(() => {
+      fetchData();
+      fetchCategoryExpenses();
+    });
+
+    return () => unsubscribe();
   }, [initialSetup]);
 
-  // Gestion du formulaire initial
   const handleInitialSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (userIncome <= 0 || userBudget <= 0) {
@@ -61,13 +99,14 @@ export default function Dashboard() {
     setInitialSetup(false);
   };
 
-  // Bouton Nouveau -> réinitialiser tout
   const handleNew = () => {
     localStorage.removeItem("userIncome");
     localStorage.removeItem("userBudget");
     setUserIncome(0);
     setUserBudget(0);
     setData(null);
+    setShowChart(false);
+    setCategoryData([]);
     setInitialSetup(true);
   };
 
@@ -124,14 +163,12 @@ export default function Dashboard() {
 
             {data && (
               <div className="space-y-4">
-                {/* Alert si dépenses > budget */}
                 {data.totalExpense > userBudget && (
                   <div className="bg-red-500 text-white p-4 rounded">
                     ⚠️ Vous avez dépassé votre budget ce mois-ci de {(data.totalExpense - userBudget).toFixed(2)} Ar
                   </div>
                 )}
 
-                {/* Cartes Résumé */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="rounded-2xl p-4 bg-emerald-50 dark:bg-neutral-800 shadow">
                     <div className="text-sm opacity-80">Revenus</div>
@@ -155,6 +192,29 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
+
+                {/* Bouton Diagramme */}
+                <button
+                  onClick={fetchCategoryExpenses}
+                  className="mt-6 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
+                >
+                  Voir diagramme des dépenses par catégorie
+                </button>
+
+                {/* Diagramme */}
+                {showChart && (
+                  <div className="mt-6 w-full h-64 bg-emerald-50 dark:bg-neutral-800 p-4 rounded shadow">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={categoryData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="category" />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="total" fill="#16a34a" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
               </div>
             )}
           </>

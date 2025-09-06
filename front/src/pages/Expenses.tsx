@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { eventBus } from "../utils/eventBus"; // ajuste le chemin si besoin
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -37,6 +38,7 @@ export default function Expenses() {
     fetchExpenses();
   }, []);
 
+  // Ajout d'une dépense
   const submit = async () => {
     if (!amount || !date || !categoryId) return alert("Remplir tous les champs");
 
@@ -51,9 +53,11 @@ export default function Expenses() {
     setDate("");
     setDescription("");
     fetchExpenses();
+
+    eventBus.emit(); // notification pour mettre à jour le diagramme
   };
 
-  // Fonction pour supprimer une dépense
+  // Suppression d'une dépense
   const deleteExpense = async (id: number) => {
     if (!window.confirm("Voulez-vous vraiment supprimer cette dépense ?")) return;
 
@@ -61,6 +65,8 @@ export default function Expenses() {
       await axios.delete(`${API}/api/expenses/${id}`);
       fetchExpenses();
       if (selectedExpense?.id === id) setSelectedExpense(null);
+
+      eventBus.emit(); // notification pour mettre à jour le diagramme
     } catch (err) {
       console.error(err);
       alert("Erreur lors de la suppression.");
