@@ -188,12 +188,11 @@ export default function Dashboard() {
                   <div className="rounded-2xl p-4 bg-emerald-50 dark:bg-neutral-800 shadow">
                     <div className="text-sm opacity-80">Solde</div>
                     <div className={`text-3xl font-semibold ${userIncome - data.totalExpense >= 0 ? "text-emerald-600" : "text-red-500"}`}>
-                      {(userIncome - data.totalExpense).toFixed(2)} Ar
+                      {Math.max(userIncome - data.totalExpense, 0).toFixed(2)} Ar
                     </div>
                   </div>
                 </div>
 
-                {/* Bouton Diagramme */}
                 <button
                   onClick={fetchCategoryExpenses}
                   className="mt-6 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
@@ -201,7 +200,6 @@ export default function Dashboard() {
                   Voir diagramme des dépenses par catégorie
                 </button>
 
-                {/* Diagramme */}
                 {showChart && (
                   <div className="mt-6 w-full h-64 bg-emerald-50 dark:bg-neutral-800 p-4 rounded shadow">
                     <ResponsiveContainer width="100%" height="100%">

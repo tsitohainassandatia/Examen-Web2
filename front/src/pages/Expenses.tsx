@@ -38,9 +38,17 @@ export default function Expenses() {
     fetchExpenses();
   }, []);
 
-  // Ajout d'une dépense
+  // Ajout d'une dépense avec vérification du solde
   const submit = async () => {
     if (!amount || !date || !categoryId) return alert("Remplir tous les champs");
+
+    // Calcul du solde disponible
+    const currentExpenses = expenses.reduce((acc, e) => acc + e.amount, 0);
+    const availableBalance = parseFloat(localStorage.getItem("userIncome") || "0") - currentExpenses;
+
+    if (parseFloat(amount) > availableBalance) {
+      return alert("Solde insuffisant pour cette dépense !");
+    }
 
     await axios.post(`${API}/api/expenses`, {
       amount: parseFloat(amount),
@@ -54,7 +62,7 @@ export default function Expenses() {
     setDescription("");
     fetchExpenses();
 
-    eventBus.emit(); // notification pour mettre à jour le diagramme
+    eventBus.emit(); // notifier le dashboard
   };
 
   // Suppression d'une dépense
