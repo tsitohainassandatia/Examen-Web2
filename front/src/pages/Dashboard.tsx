@@ -89,7 +89,7 @@ export default function Dashboard() {
         {initialSetup ? (
           <form onSubmit={handleInitialSubmit} className="space-y-4 bg-emerald-50 dark:bg-neutral-800 p-6 rounded-xl shadow max-w-md mx-auto">
             <div className="flex flex-col">
-              <label className="mb-1 font-semibold">Revenu mensuel (€)</label>
+              <label className="mb-1 font-semibold">Revenu mensuel (Ar)</label>
               <input
                 type="number"
                 value={userIncome}
@@ -100,7 +100,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex flex-col">
-              <label className="mb-1 font-semibold">Budget mensuel (€)</label>
+              <label className="mb-1 font-semibold">Budget mensuel (Ar)</label>
               <input
                 type="number"
                 value={userBudget}
@@ -127,7 +127,7 @@ export default function Dashboard() {
                 {/* Alert si dépenses > budget */}
                 {data.totalExpense > userBudget && (
                   <div className="bg-red-500 text-white p-4 rounded">
-                    ⚠️ Vous avez dépassé votre budget ce mois-ci de {(data.totalExpense - userBudget).toFixed(2)} €
+                    ⚠️ Vous avez dépassé votre budget ce mois-ci de {(data.totalExpense - userBudget).toFixed(2)} Ar
                   </div>
                 )}
 
@@ -135,23 +135,23 @@ export default function Dashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="rounded-2xl p-4 bg-emerald-50 dark:bg-neutral-800 shadow">
                     <div className="text-sm opacity-80">Revenus</div>
-                    <div className="text-3xl font-semibold">{userIncome.toFixed(2)} €</div>
+                    <div className="text-3xl font-semibold">{userIncome.toFixed(2)} Ar</div>
                   </div>
 
                   <div className="rounded-2xl p-4 bg-emerald-50 dark:bg-neutral-800 shadow">
                     <div className="text-sm opacity-80">Budget</div>
-                    <div className="text-3xl font-semibold">{userBudget.toFixed(2)} €</div>
+                    <div className="text-3xl font-semibold">{userBudget.toFixed(2)} Ar</div>
                   </div>
 
                   <div className="rounded-2xl p-4 bg-emerald-50 dark:bg-neutral-800 shadow">
                     <div className="text-sm opacity-80">Dépenses</div>
-                    <div className="text-3xl font-semibold">{data.totalExpense.toFixed(2)} €</div>
+                    <div className="text-3xl font-semibold">{data.totalExpense.toFixed(2)} Ar</div>
                   </div>
 
                   <div className="rounded-2xl p-4 bg-emerald-50 dark:bg-neutral-800 shadow">
                     <div className="text-sm opacity-80">Solde</div>
                     <div className={`text-3xl font-semibold ${userIncome - data.totalExpense >= 0 ? "text-emerald-600" : "text-red-500"}`}>
-                      {(userIncome - data.totalExpense).toFixed(2)} €
+                      {(userIncome - data.totalExpense).toFixed(2)} Ar
                     </div>
                   </div>
                 </div>
