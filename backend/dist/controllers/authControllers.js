@@ -1,10 +1,16 @@
-import bcrypt from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.registerUser = void 0;
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
 // --------------------
 // Inscription
 // --------------------
-export const registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
     try {
         // 1️⃣ Récupération des données envoyées par le front
         const { email, mot_de_pass, nom } = req.body;
@@ -19,7 +25,7 @@ export const registerUser = async (req, res) => {
             return res.status(400).json({ message: "Email déjà utilisé ❌" });
         }
         // 3️⃣ Hachage du mot de passe
-        const hashedPassword = await bcrypt.hash(mot_de_pass, 10);
+        const hashedPassword = await bcryptjs_1.default.hash(mot_de_pass, 10);
         // 4️⃣ Création de l’utilisateur
         const user = await prisma.user.create({
             data: {
@@ -31,7 +37,7 @@ export const registerUser = async (req, res) => {
                 id: true,
                 email: true,
                 nom: true,
-                dateCreation: true,
+                createdAt: true,
             },
         });
         return res.status(201).json({
@@ -47,4 +53,5 @@ export const registerUser = async (req, res) => {
         });
     }
 };
+exports.registerUser = registerUser;
 //# sourceMappingURL=authControllers.js.map

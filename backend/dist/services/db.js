@@ -1,10 +1,12 @@
-import { Pool } from "pg";
-const db = new Pool({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const pg_1 = require("pg");
+const db = new pg_1.Pool({
     user: "postgres",
     host: "localhost",
     database: "gestion_depense",
     password: "henintsoa",
     port: 5432,
 });
-export default db;
+exports.default = db;
 //# sourceMappingURL=db.js.map

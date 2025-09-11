@@ -39,7 +39,7 @@ export const registerUser = async (req: Request, res: Response) => {
         id: true,
         email: true,
         nom: true,
-        dateCreation: true,
+        createdAt: true,
       },
     });
 

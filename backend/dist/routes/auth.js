@@ -1,7 +1,9 @@
-import { Router } from "express";
-import { registerUser } from "../controllers/authControllers";
-const router = Router();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authControllers_1 = require("../controllers/authControllers");
+const router = (0, express_1.Router)();
 // Route inscription
-router.post("/register", registerUser);
-export default router;
+router.post("/register", authControllers_1.registerUser);
+exports.default = router;
 //# sourceMappingURL=auth.js.map

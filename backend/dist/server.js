@@ -1,55 +1,64 @@
-import express from "express";
-import cors from "cors";
-import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-const app = express();
-const prisma = new PrismaClient();
-app.use(cors());
-app.use(express.json());
-const JWT_SECRET = process.env.JWT_SECRET || "secret";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const client_1 = require("@prisma/client");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const app = (0, express_1.default)();
+const prisma = new client_1.PrismaClient();
+app.use((0, cors_1.default)({
+    origin: "http://localhost:5173", // ton frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}));
+app.use(express_1.default.json()); // parse le JSON du body
 // --- Inscription ---
 app.post("/auth/register", async (req, res) => {
-    const { email, mot_de_pass } = req.body;
+    console.log("Body reçu :", req.body);
+    const { email, mot_de_passe } = req.body;
+    if (!email || !mot_de_passe) {
+        return res.status(400).json({ error: "Email et mot de passe requis" });
+    }
     try {
-        const hashedPassword = await bcrypt.hash(mot_de_pass, 10);
+        const hashedPassword = await bcryptjs_1.default.hash(mot_de_passe, 10);
         const user = await prisma.user.create({
-            data: { email, mot_de_passe: hashedPassword }, // nom est optionnel
+            data: { email, mot_de_passe: hashedPassword },
         });
-        res.json({ message: "Utilisateur créé ✅", user });
+        res.json({ message: "Compte créé avec succès ✅", user });
     }
     catch (error) {
-        res.status(400).json({ error: "Email déjà utilisé" });
+        console.error(error);
+        res.status(400).json({ error: "Email déjà utilisé ou erreur serveur" });
     }
 });
 // --- Connexion ---
 app.post("/auth/login", async (req, res) => {
-    const { email, mot_de_pass } = req.body;
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user)
-        return res.status(401).json({ error: "Utilisateur non trouvé" });
-    const isPasswordValid = await bcrypt.compare(mot_de_pass, user.mot_de_passe);
-    if (!isPasswordValid)
-        return res.status(401).json({ error: "Mot de passe incorrect" });
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "1h" });
-    res.json({ message: "Connexion réussie ✅", token });
-});
-// --- Exemple de route protégée ---
-app.get("/auth/profile", async (req, res) => {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
-    if (!token)
-        return res.status(403).json({ error: "Token manquant" });
-    try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        const user = await prisma.user.findUnique({
-            where: { id: decoded.userId },
-            select: { id: true, email: true, createdAt: true },
-        });
-        res.json(user);
+    console.log("Body reçu :", req.body);
+    const { email, mot_de_passe } = req.body;
+    if (!email || !mot_de_passe) {
+        return res.status(400).json({ error: "Email et mot de passe requis" });
     }
-    catch {
-        res.status(403).json({ error: "Token invalide" });
+    try {
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) {
+            return res.status(401).json({ error: "Email ou mot de passe incorrect ❌" });
+        }
+        const isPasswordValid = await bcryptjs_1.default.compare(mot_de_passe, user.mot_de_passe);
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: "Email ou mot de passe incorrect ❌" });
+        }
+        // Générer un token
+        const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, "SECRET_KEY", // ⚠️ à remplacer par une vraie clé dans ton .env
+        { expiresIn: "1h" });
+        res.json({ message: "Connexion réussie ✅", token });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erreur serveur" });
     }
 });
 app.listen(4000, () => console.log("🚀 Backend démarré sur http://localhost:4000"));
